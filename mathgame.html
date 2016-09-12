@@ -31,7 +31,7 @@ function preload() {
     var numdir = 'assets/Numbers/'
     var numval = ''
     var numpath = ''
-    for (step=0; step<5; step++)
+    for (step=0; step<7; step++)
     {
         numval = step.toString();
         numpath = numdir + numval + '.png'
@@ -52,13 +52,16 @@ var score = 0;
 var scoreText;
 var equation;
 
-var timesTable;
+var all_equations;
+var lefthand;
+var righthand;
+var solution;
 
 function create() {
 
     // Set up times table dictionary
     tableRange = (1,12);
-    setupTimesTable(timesTable, tableRange);
+    setupTimesTable(tableRange);
 
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -70,14 +73,13 @@ function create() {
     //  The platforms group contains the ground and the 2 ledges we can jump on
     grounds = game.add.group();
     platforms = game.add.group();
-    numbersright = game.add.group();
-    numbersleft = game.add.group();
+    number_sprites = game.add.group();
 
     //  We will enable physics for any object that is created in this group
     platforms.enableBody = true;
     grounds.enableBody = true;
-    numbersright.enableBody = true;
-    numbersleft.enableBody = true;
+    number_sprites.enableBody = true;
+    //numbersleft.enableBody = true;
 
     var ground;
     var offset;
@@ -104,12 +106,12 @@ function create() {
     ledge.body.immovable = true;
     ledge.body.allowGravity = false;
 
-    ledge = platforms.create(336, 325, 'stage');
+    ledge = platforms.create(336, 350, 'stage');
     ledge.scale.setTo(0.5, 0.5);
     ledge.body.immovable = true;
     ledge.body.allowGravity = false;
 
-    ledge = platforms.create(608, 200, 'stage');
+    ledge = platforms.create(608, 250, 'stage');
     ledge.scale.setTo(0.5, 0.5);
     ledge.body.immovable = true;
     ledge.body.allowGravity = false;
@@ -123,58 +125,89 @@ function create() {
     game.physics.arcade.enable(player);
 
     //  Player physics properties. Give the little guy a slight bounce.
-    player.body.gravity.y = 700;
+    player.body.gravity.y = 500;
     player.body.collideWorldBounds = true;
 
     //  Our two animations, walking left and right.
     player.animations.add('left', [0, 1, 2, 3], 10, true);
     player.animations.add('right', [5, 6, 7, 8], 10, true);
 
+
+
+    // Set up initial equation
+    all_equations = [];
+    lefthand = game.rnd.integerInRange(1, 12);
+    righthand = game.rnd.integerInRange(1, 12);
+    solution = self.timesTable[lefthand-1][righthand-1];
+    equation = [lefthand, righthand];
+    all_equations.push(equation);
+    console.log("Current solution is: ", solution);
+    self.answerchoices = [];
+    self.answerchoices.push(solution);
+    numarr = [1,2,3,4,5,6];
+    shuffleArray(numarr);
+    console.log("Here's ye shuffell'd arr'ay matey", numarr);
+
     //  The score
-    scoreText = game.add.text(16, 16, '4 x 4 = ', { fontSize: '32px', fill: '#000' });
+    equationText = equation[0].toString() + ' x ' + equation[1].toString() + ' = '
+    scoreText = game.add.text(16, 16, equationText, { fontSize: '32px', fill: '#000' });
     scoreText.x = 400 - (scoreText.width / 2);
 
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
 
 
+
     // Numbers setup
 
     // Left side
-    var leftval = game.rnd.integerInRange(0, 4);
-    var lefttext = leftval.toString();
-    var number_l = numbersleft.create(237.5, 100, lefttext);
+    var int_value = game.rnd.integerInRange(1, 6);
+    var int_text = int_value.toString();
+    var number_sprite = number_sprites.create(800, 125, int_text);
 
-    number_l.scale.setTo(0.75, 0.75);
-    number_l.body.immovable = true;
-    number_l.body.allowGravity = false;
-    numbersleft.setAll('body.velocity.y', -100);
+    number_sprite.scale.setTo(0.75, 0.75);
+    number_sprite.body.immovable = true;
+    number_sprite.body.allowGravity = false;
 
+    // Trailing number sprite
+    var int_value = game.rnd.integerInRange(1, 6);
+    var int_text = int_value.toString();
+    var number_sprite = number_sprites.create(1200, 125, int_text);
+
+    number_sprite.scale.setTo(0.75, 0.75);
+    number_sprite.body.immovable = true;
+    number_sprite.body.allowGravity = false;
+
+    // Set numbers velocity
+    number_sprites.setAll('body.velocity.x', -100);
+
+    /*
     // Right side
-    var rightval = game.rnd.integerInRange(0, 4);
+    var rightval = game.rnd.integerInRange(1, 6);
     var righttext = rightval.toString();
-    var number_r = numbersright.create(512.5, 100, righttext);
+    var number_r = numbersright.create( (800/4)*3, 100, righttext);
 
     number_r.scale.setTo(0.75, 0.75);
     number_r.body.immovable = true;
     number_r.body.allowGravity = false;
-    numbersright.setAll('body.velocity.y', -100);
-
+    numbersright.setAll('body.velocity.x', -100);
+    */
 }
 
 function update() {
     platforms.forEach(wrapPlatform);
-    numbersright.forEach(wrapNumbers);
-    numbersleft.forEach(wrapNumbers);
+    number_sprites.forEach(wrapNumbers);
+    //numbersleft.forEach(wrapNumbers);
 
     //  Collide the player with the platforms
     game.physics.arcade.collide(player, platforms);
 
     // Left-hand numbers
-    game.physics.arcade.overlap(player, numbersright, collectNumber, null, this);
-
+    game.physics.arcade.overlap(player, number_sprites, collectNumber, null, this);
+    /*
     // Right-hand numbers
     game.physics.arcade.overlap(player, numbersleft, collectNumber, null, this);
+    */
 
     //  Reset the players velocity (movement)
     player.body.velocity.x = 0;
@@ -214,9 +247,8 @@ function update() {
 
 }
 
-function setupTimesTable(timesTable, tableRange) {
-    console.log("nonsense");
-    timesTable = 
+function setupTimesTable(tableRange) {
+    self.timesTable = 
     [
     [ 1,2,3,4,5,6,7,8,9,10,11,12 ],
     [ 2,4,6,8,10,12,14,16,18,20,24 ],
@@ -231,12 +263,16 @@ function setupTimesTable(timesTable, tableRange) {
     [ 11,22,33,44,55,66,77,88,99,110,121,132 ],
     [ 12,24,36,48,60,72,84,96,108,120,132,144 ]
     ]
-    console.log("6 X 6 = ", timesTable[5][5])
+    console.log("6 X 6 = ", self.timesTable[5][5])
+    if (self.timesTable[5][5] == 36)
+    {
+        console.log("By golly they're equal.");
+    }
 }
 
 function wrapPlatform (platform) {
     // Half of platform width
-    if (platform.y < 200)
+    if (platform.y < 250)
     {
         platform.body.velocity.y = 100;
     }
@@ -248,27 +284,49 @@ function wrapPlatform (platform) {
 
 function wrapNumbers (number) {
     // Half of platform width
-    if (number.y < 200)
+    if (number.x < -50)
     {
-        number.body.velocity.y = 100;
+        number.destroy();
+        // Trailing number sprite
+        var int_value = game.rnd.integerInRange(1, 6);
+        var int_text = int_value.toString();
+        var number_sprite = number_sprites.create(800, 125, int_text);
+
+        number_sprite.scale.setTo(0.75, 0.75);
+        number_sprite.body.immovable = true;
+        number_sprite.body.allowGravity = false;
+
+        // Set numbers velocity
+        number_sprites.setAll('body.velocity.x', -100);
     }
-    else if (number.y > 450)
-    {
-        number.body.velocity.y = -100;
-    }
+
+    //else if (number.x > 450)
+    //{
+      //  number.body.velocity.x = -100;
+    //}
 }
 
 function collectNumber (player, number) {
     
     // Removes the number from the screen
-    number.kill();
+    //number.kill();
 
     //  Add and update the score
-    score = number.key;
+    answer = number.key;
+
     equation = '4 x 4'
-    scoreText.text = equation + ' = ' + score;
+    scoreText.text = equation + ' = ' + answer;
     scoreText.x = 400 - (scoreText.width / 2);
 
+}
+
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
 }
 
 </script>
