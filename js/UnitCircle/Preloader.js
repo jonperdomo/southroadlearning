@@ -26,6 +26,7 @@ Game.Preloader.prototype = {
 	    this.load.image('star', 'assets/star.png');
         this.load.image('unit_circle', 'assets/unit_circle-transparent.png');
         this.load.image('angle', 'assets/angle.png');
+        this.load.image('minus_sqrt3over2', 'assets/UnitCircleNumbers/minus_sqrt3over2.png')
 	    this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
     },
 
