@@ -20,12 +20,10 @@ Game.TimesTables.prototype = {
         //var this.solution;
 
         var timesTable;
-        this.pause_elapsed = 0;
+
         // Set up times table dictionary
         tableRange = (1,12);
         timesTable = this.setupTimesTable(tableRange);
-
-        this.player_tint;
 
         //  We're going to be using physics, so enable the Arcade Physics system
         this.physics.startSystem(Phaser.Physics.ARCADE);
@@ -89,13 +87,14 @@ Game.TimesTables.prototype = {
         this.yes_icon.visible = false;
 
         // Set up initial equation
+        this.choice_number = 4;
         lefthand = this.rnd.integerInRange(1, 12);
         righthand = this.rnd.integerInRange(1, 12);
         this.solution = (timesTable[lefthand-1][righthand-1]).toString();
-        console.log("Current this.solution is: ", this.solution);
+        console.log(lefthand, " x ", righthand, "is: ", this.solution);
 
     	choice_array = [this.solution];
-    	for (var i = 0; i < 5; i++)
+    	for (var i = 0; i < this.choice_number-1; i++)
     	{
     		var choice = this.rnd.integerInRange(1, 144);
     		choice_array.push(choice.toString());
@@ -109,7 +108,7 @@ Game.TimesTables.prototype = {
 
 
         // Numbers setup
-    	for (var i = 0; i < 4; i++)
+    	for (var i = 0; i < this.choice_number; i++)
     	{
     		var number_sprite = this.number_sprites.create(this.world.width + (i * this.world.width / 2), 125, choice_array[i]);
     		number_sprite.scale.setTo(0.75, 0.75);
@@ -164,7 +163,7 @@ Game.TimesTables.prototype = {
         if (player.body.position.y == (this.game.world.height - this.player.height)) {
             console.log("player reset.");
             player.body.position.x = 384;
-            player.body.position.y = 200;
+            player.body.position.y = 180;
             console.log("position: ", player.body.position.x, ", ", player.body.position.y);
         }
     },
@@ -214,7 +213,10 @@ Game.TimesTables.prototype = {
         // Half of platform width
         if (number.x < -number.width)
         {
-    		number.body.position.x = (800 - number.width) * 3.;
+            // For 6:
+    		// number.body.position.x = (800 - number.width) * 3.;
+            // For 4:
+            number.body.position.x = (800 - number.width) * 2;
         }
     },
 
@@ -242,10 +244,10 @@ Game.TimesTables.prototype = {
         lefthand = this.rnd.integerInRange(1, 12);
         righthand = this.rnd.integerInRange(1, 12);
         this.solution = (timesTable[lefthand-1][righthand-1]).toString();
-        console.log("Current this.solution is: ", this.solution);
+        console.log(lefthand, " x ", righthand, "is: ", this.solution);
 
     	choice_array = [this.solution];
-    	for (var i = 0; i < 5; i++)
+    	for (var i = 0; i < this.choice_number-1; i++)
     	{
     		var choice = this.rnd.integerInRange(1, 144);
     		choice_array.push(choice.toString());
@@ -260,7 +262,7 @@ Game.TimesTables.prototype = {
 
 
         // Numbers setup
-    	for (var i = 0; i < 4; i++)
+    	for (var i = 0; i < this.choice_number; i++)
     	{
     		var number_sprite = this.number_sprites.create(this.world.width + (i * this.world.width / 2), 125, choice_array[i]);
     		number_sprite.scale.setTo(0.75, 0.75);
