@@ -1,4 +1,4 @@
-# Archimedes Math
+# South Road Learning
 Fun online games for learning basic math concepts.
 Created with [Phaser](http://phaser.io).
 
