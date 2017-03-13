@@ -75,13 +75,18 @@ Game.TimesTables.prototype = {
         this.player.animations.add('left', [0, 1, 2, 3], 10, true);
         this.player.animations.add('right', [5, 6, 7, 8], 10, true);
 
-        this.player_tint = this.player.tint;
-
     	//  Our controls.
         this.cursors = this.input.keyboard.createCursorKeys();
 
-    	/////////////////////////////////////
+        // Result icons
+        // 30 px Arial
+        this.no_icon = this.add.sprite(92, 75, 'no');
+        this.no_icon.anchor.setTo(0.5, 0.5);
+        this.no_icon.visible = false;
 
+        this.yes_icon = this.add.sprite(92, 75, 'yes');
+        this.yes_icon.anchor.setTo(0.5, 0.5);
+        this.yes_icon.visible = false;
 
         // Set up initial equation
         lefthand = this.rnd.integerInRange(1, 12);
@@ -130,33 +135,25 @@ Game.TimesTables.prototype = {
         //  Reset the this.players velocity (movement)
         this.player.body.velocity.x = 0;
 
-        if (this.cursors.left.isDown)
-        {
+        if (this.cursors.left.isDown) {
             //  Move to the left
             this.player.body.velocity.x = -150;
 
             this.player.animations.play('left');
-        }
-        else if (this.cursors.right.isDown)
-        {
+        } else if (this.cursors.right.isDown) {
             //  Move to the right
             this.player.body.velocity.x = 150;
 
             this.player.animations.play('right');
-        }
-        else
-        {
+
+        } else {
             //  Stand still
             this.player.animations.stop();
-
-            this.player.frame = 4;
-        }
+            this.player.frame = 4; }
 
         //  Allow the this.player to jump if they are touching the ground.
-        if (this.cursors.up.isDown && this.player.body.touching.down)
-        {
-            this.player.body.velocity.y = -350;
-        }
+        if (this.cursors.up.isDown && this.player.body.touching.down) {
+            this.player.body.velocity.y = -350; }
 
         // Reset player if out of bounds
         this.wrapPlayer(this.player);

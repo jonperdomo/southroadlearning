@@ -35,6 +35,7 @@ Game.UnitCircle.prototype = {
         this.no_icon = this.add.sprite(this.equation_text.x - this.equation_text.width -300, this.equation_text.y, 'no');
         this.no_icon.anchor.setTo(0.5, 0.5);
         this.no_icon.visible = false;
+        console.log("ICONS: ", this.no_icon.x, ", ", this.no_icon.y);
 
         this.yes_icon = this.add.sprite(this.equation_text.x - this.equation_text.width -300, this.equation_text.y, 'yes');
         this.yes_icon.anchor.setTo(0.5, 0.5);
