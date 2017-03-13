@@ -8,10 +8,12 @@ Game.UnitCircle.prototype = {
         var numbers;
         var score = 0;
         var equation;
+        this.answer_indices = [];
         this.degrees = [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330];
-        this.current_index = 0;
+        this.cosines = ["1", "√3/2", "√2/2", "1/2", "0", "-1/2", "-√2/2", "-√3/2", "-1", "-√3/2", "-√2/2", "-1/2", "0", "1/2", "√2/2", "√3/2"];
+        this.sines = ["0", "1/2", "√2/2", "√3/2", "1", "√3/2", "√2/2", "1/2", "0", "-1/2", "-√2/2", "-√3/2", "-1", "-√3/2", "-√2/2", "-1/2"];
 
-        //  A simple background for our game
+        //  Background
         bg = this.add.sprite(0, 0, 'bg');
         bg.scale.setTo(0.125, 0.125);
         bg.y += this.world.height/2.
@@ -27,7 +29,7 @@ Game.UnitCircle.prototype = {
         this.angle_line.anchor.setTo(0.5, 1);
 
         // Problem text
-        this.problem_text = this.add.text(this.world.width/8., this.world.height/8., "sin(θ) = ", {
+        this.problem_text = this.add.text(this.world.width/2., this.world.height/8., "sin(θ) = ", {
             font: "30px Arial",
             fill: "#000000",
             align: "center"
@@ -36,9 +38,13 @@ Game.UnitCircle.prototype = {
 
         // Solution text?
         // 30 px Arial
-        this.solution_text = this.add.sprite(this.problem_text.x + this.problem_text.width, this.world.height/8., 'minus_sqrt3over2');
-        this.solution_text.anchor.setTo(0.5, 0.5);
+        this.no_icon = this.add.sprite(this.problem_text.x - this.problem_text.width -50, this.problem_text.y, 'no');
+        this.no_icon.anchor.setTo(0.5, 0.5);
+        this.no_icon.visible = true;
 
+        this.yes_icon = this.add.sprite(this.problem_text.x - this.problem_text.width -50, this.problem_text.y, 'yes');
+        this.yes_icon.anchor.setTo(0.5, 0.5);
+        this.yes_icon.visible = false;
 
         // Degrees text
         this.degrees_text = this.add.text(this.world.width*.8, this.world.height/8., "Angle: ", {
@@ -73,13 +79,20 @@ Game.UnitCircle.prototype = {
 
 
     updateAngleText: function () {
-        // var angle = -Phaser.Math.roundTo(this.angle_line.angle, 0) + 180;
-        var angle = -Phaser.Math.roundTo(this.angle_line.angle, 0) + 90;
-        if (angle < 0) {
-            angle += 360;
+        if (this.game.input.activePointer.isDown) {
+            var angle = -Phaser.Math.roundTo(this.angle_line.angle, 0) + 90;
+            if (angle < 0) {
+                angle += 360;
+            }
+            var final_value = this.closest(angle, this.degrees);
+            this.problem_text.setText("sin(" + final_value.toString() + "°) = -√3/2");
+            // this.yes_icon.visible = this.no_icon.visible;
+            // this.no_icon.visible = !this.no_icon.visible;
+            var solution_index = this.degrees.indexOf(final_value);
+            console.log(solution_index);
+        } else {
+            this.problem_text.setText("sin(θ) = -√3/2");
         }
-        var final_value = this.closest(angle, this.degrees);
-        this.problem_text.setText("sin(" + final_value.toString() + ") = ");
     },
 
 

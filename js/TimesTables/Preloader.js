@@ -7,7 +7,7 @@ Game.Preloader.prototype = {
         this.logo = this.add.sprite(this.world.centerX-108, this.world.centerY-108, 'logo');
         this.logo.scale.setTo(0.5, 0.5);
         var style = {font: "32px Arial", fill: "#000"};
-        this.title_text = this.add.text(this.world.centerX, this.world.centerY-216, "Archimedes: Times Tables", style);
+        this.title_text = this.add.text(this.world.centerX, this.world.centerY-216, "Times Tables", style);
         this.title_text.x = this.world.centerX - (this.title_text.width / 2);
         this.preloadBar = this.add.sprite(this.world.centerX, this.world.centerY, 'preloaderBar');
         this.preloadBar.x -= this.preloadBar.width / 2

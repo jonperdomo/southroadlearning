@@ -20,10 +20,12 @@ Game.TimesTables.prototype = {
         //var this.solution;
 
         var timesTable;
-
+        this.pause_elapsed = 0;
         // Set up times table dictionary
         tableRange = (1,12);
         timesTable = this.setupTimesTable(tableRange);
+
+        this.player_tint;
 
         //  We're going to be using physics, so enable the Arcade Physics system
         this.physics.startSystem(Phaser.Physics.ARCADE);
@@ -40,42 +42,22 @@ Game.TimesTables.prototype = {
         this.platforms.enableBody = true;
         this.grounds.enableBody = true;
         this.number_sprites.enableBody = true;
-        //numbersleft.enableBody = true;
 
-        var ground;
-        var offset;
+        //  Now let's create three ledges
+        var left_ledge = this.platforms.create(64, 450, 'stage');
+        left_ledge.scale.setTo(0.5, 0.5);
+        left_ledge.body.immovable = true;
+        left_ledge.body.allowGravity = false;
 
-        // Here we create the ground.
-        for (step=0; step<13; step++)
-        {
-            offset = 64 * step
-            ground = this.grounds.create(offset, this.world.height - 63, 'water_surf');
-            //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-            ground.scale.setTo(0.5, 0.5);
-            ground.body.immovable = true;
+        var middle_ledge = this.platforms.create(336, 350, 'stage');
+        middle_ledge.scale.setTo(0.5, 0.5);
+        middle_ledge.body.immovable = true;
+        middle_ledge.body.allowGravity = false;
 
-            ground = this.grounds.create(offset, this.world.height - 14, 'water');
-            ground.scale.setTo(0.5, 0.5);
-
-            //  This stops it from falling away when you jump on it
-            ground.body.immovable = true;
-        }
-
-        //  Now let's create two ledges
-        var ledge = this.platforms.create(64, 450, 'stage');
-        ledge.scale.setTo(0.5, 0.5);
-        ledge.body.immovable = true;
-        ledge.body.allowGravity = false;
-
-        ledge = this.platforms.create(336, 350, 'stage');
-        ledge.scale.setTo(0.5, 0.5);
-        ledge.body.immovable = true;
-        ledge.body.allowGravity = false;
-
-        ledge = this.platforms.create(608, 250, 'stage');
-        ledge.scale.setTo(0.5, 0.5);
-        ledge.body.immovable = true;
-        ledge.body.allowGravity = false;
+        var right_ledge = this.platforms.create(608, 250, 'stage');
+        right_ledge.scale.setTo(0.5, 0.5);
+        right_ledge.body.immovable = true;
+        right_ledge.body.allowGravity = false;
 
         this.platforms.setAll('body.velocity.y', -100);
 
@@ -92,6 +74,8 @@ Game.TimesTables.prototype = {
         //  Our two animations, walking left and right.
         this.player.animations.add('left', [0, 1, 2, 3], 10, true);
         this.player.animations.add('right', [5, 6, 7, 8], 10, true);
+
+        this.player_tint = this.player.tint;
 
     	//  Our controls.
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -120,7 +104,7 @@ Game.TimesTables.prototype = {
 
 
         // Numbers setup
-    	for (var i = 0; i < 6; i++)
+    	for (var i = 0; i < 4; i++)
     	{
     		var number_sprite = this.number_sprites.create(this.world.width + (i * this.world.width / 2), 125, choice_array[i]);
     		number_sprite.scale.setTo(0.75, 0.75);
@@ -174,14 +158,29 @@ Game.TimesTables.prototype = {
             this.player.body.velocity.y = -350;
         }
 
-        if (this.physics.arcade.collide(this.player, this.grounds))
-        {
-            this.player.body.velocity.y = -600;
-        }
-
+        // Reset player if out of bounds
+        this.wrapPlayer(this.player);
     },
 
-    /////
+
+    wrapPlayer: function(player) {
+        if (player.body.position.y == (this.game.world.height - this.player.height)) {
+            console.log("player reset.");
+            player.body.position.x = 384;
+            player.body.position.y = 200;
+            console.log("position: ", player.body.position.x, ", ", player.body.position.y);
+        }
+    },
+
+
+    unpauseGame: function() {
+        // this.game.paused = false;
+        console.log("Unpause here.");
+        this.timer.stop();
+        this.game.paused = false;
+    },
+
+
     setupTimesTable: function (tableRange) {
         timesTable =
         [
@@ -197,12 +196,7 @@ Game.TimesTables.prototype = {
         [ 10,20,30,40,50,60,70,80,90,100,110,120 ],
         [ 11,22,33,44,55,66,77,88,99,110,121,132 ],
         [ 12,24,36,48,60,72,84,96,108,120,132,144 ]
-        ]
-        console.log("6 X 6 = ", timesTable[5][5])
-        if (timesTable[5][5] == 36)
-        {
-            console.log("By golly they're equal.");
-        }
+        ];
 
     	return timesTable
     },
@@ -269,7 +263,7 @@ Game.TimesTables.prototype = {
 
 
         // Numbers setup
-    	for (var i = 0; i < 6; i++)
+    	for (var i = 0; i < 4; i++)
     	{
     		var number_sprite = this.number_sprites.create(this.world.width + (i * this.world.width / 2), 125, choice_array[i]);
     		number_sprite.scale.setTo(0.75, 0.75);
