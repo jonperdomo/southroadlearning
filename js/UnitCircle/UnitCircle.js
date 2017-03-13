@@ -74,7 +74,7 @@ Game.UnitCircle.prototype = {
                 "point": value,
                 solution: this.sines_table[value] };
             cosine_data = {
-                "equation": "sin",
+                "equation": "cos",
                 "point": value,
                 "solution": this.cosines_table[value] };
             equations.push(sine_data);
