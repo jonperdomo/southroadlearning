@@ -198,7 +198,7 @@ Game.TimesTables.prototype = {
         [ 12,24,36,48,60,72,84,96,108,120,132,144 ]
         ];
 
-    	return timesTable
+    	return timesTable;
     },
 
     wrapPlatform: function (platform) {
