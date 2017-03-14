@@ -1,4 +1,4 @@
-# South Road Learning
+# Study Playground
 Fun online games for learning basic math concepts.
 Created with [Phaser](http://phaser.io).
 
