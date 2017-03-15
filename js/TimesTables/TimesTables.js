@@ -87,7 +87,7 @@ Game.TimesTables.prototype = {
         this.yes_icon.visible = false;
 
         // Set up initial equation
-        this.choice_number = 4;
+        this.choice_number = 3;
         lefthand = this.rnd.integerInRange(1, 12);
         righthand = this.rnd.integerInRange(1, 12);
         this.solution = (timesTable[lefthand-1][righthand-1]).toString();
@@ -216,7 +216,9 @@ Game.TimesTables.prototype = {
             // For 6:
     		// number.body.position.x = (800 - number.width) * 3.;
             // For 4:
-            number.body.position.x = (800 - number.width) * 2;
+            // number.body.position.x = (800 - number.width) * 2;
+            // For 3:
+            number.body.position.x = (800 - number.width) * 1.5;
         }
     },
 
