@@ -16,6 +16,7 @@ Game.UnitCircle.prototype = {
         this.unit_circle.x -= this.unit_circle.width/2.;
         this.unit_circle.y -= this.unit_circle.height/2.;
         this.degrees = [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330];
+        this.sprite_degrees = [-90, -60, -45, -30, 0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270];
 
         // Angle line
         this.angle_update = 0.3;
@@ -47,16 +48,46 @@ Game.UnitCircle.prototype = {
         this.equations = this.createEquations();
         this.active_equation = this.equations[0];
         this.equation_text.setText(this.active_equation.equation + "(θ)=" + this.active_equation.point);
-        console.log("success!");
+        console.log("A new equation set has started!");
+
+        this.game.input.onDown.add(this.checkAnswer, this);
+    },
+
+
+    checkAnswer: function() {
+        var angle = -Phaser.Math.roundTo(this.angle_line.angle, 0) + 90;
+        if (angle < 0) {
+            angle += 360;
+        }
+        // var final_value = this.closest(angle, this.degrees);
+        // this.equation_text.setText("sin(" + final_value.toString() + "°) = -√3/2");
+        this.equation_text.setText(this.active_equation.equation + "(" + angle.toString() + "°)=" + this.active_equation.point);
+        if (this.active_equation.solution.includes(angle)) {
+            console.log("correct!");
+            this.yes_icon.visible = true;
+            this.no_icon.visible = false;
+            this.updateEquation();
+            this.angle_update = -this.angle_update;
+        } else {
+            this.no_icon.visible = true;
+            this.yes_icon.visible = false;
+        }
     },
 
 
     updateEquation: function() {
         if (this.equations.length > 0) {
             this.equations.splice(0, 1);
-            this.active_equation = this.equations[0];
-            this.equation_text.setText(this.active_equation.equation + "(θ)=" + this.active_equation.point);
+        } else {
+            // All equations were solved!
+            console.log("All equations were solved!");
+
+            // Set up a new problem
+            this.equations = this.createEquations();
+            console.log("A new equation set has started!");
         }
+        this.active_equation = this.equations[0];
+        this.equation_text.setText(this.active_equation.equation + "(θ)=" + this.active_equation.point);
     },
 
 
@@ -134,8 +165,17 @@ Game.UnitCircle.prototype = {
 
 
     update: function () {
-        this.angle_line.angle += this.angle_update;
-        this.updateAngleText();
+        // Get the sprite angle based on the mouse position relative to the game center
+        center_x = this.world.width/2.
+        center_y = this.world.height/2.
+        var delta_x = this.game.input.mousePointer.x - center_x;
+        var delta_y = this.game.input.mousePointer.y - center_y;
+        theta_radians = Math.atan2(delta_y, delta_x);
+
+        // Adding 90 degrees is necessary to obtain the correct sprite angle
+        sprite_angle = (theta_radians * (180 / Math.PI)) + 90;
+        var angle_choice = this.closest(sprite_angle, this.sprite_degrees);
+        this.angle_line.angle = angle_choice;
     },
 
 
@@ -145,36 +185,6 @@ Game.UnitCircle.prototype = {
             platform.body.velocity.y = 100;
         } else if (platform.y > 450) {
             platform.body.velocity.y = -100;
-        }
-    },
-
-
-    updateAngleText: function () {
-        if (this.game.input.activePointer.isDown) {
-            var angle = -Phaser.Math.roundTo(this.angle_line.angle, 0) + 90;
-            if (angle < 0) {
-                angle += 360;
-            }
-            var final_value = this.closest(angle, this.degrees);
-            // this.equation_text.setText("sin(" + final_value.toString() + "°) = -√3/2");
-            this.equation_text.setText(this.active_equation.equation + "(" + final_value.toString() + "°)=" + this.active_equation.point);
-            if (this.active_equation.solution.includes(final_value)) {
-                console.log("correct!");
-                this.yes_icon.visible = true;
-                this.no_icon.visible = false;
-                this.updateEquation();
-                this.angle_update = -this.angle_update;
-            } else {
-                this.no_icon.visible = true;
-                this.yes_icon.visible = false;
-            }
-            // this.yes_icon.visible = this.no_icon.visible;
-            // this.no_icon.visible = !this.no_icon.visible;
-        } else {
-            // this.equation_text.setText("sin(θ) = -√3/2");
-            this.equation_text.setText(this.active_equation.equation + "(θ)=" + this.active_equation.point);
-            this.yes_icon.visible = false;
-            this.no_icon.visible = false;
         }
     },
 
@@ -191,12 +201,6 @@ Game.UnitCircle.prototype = {
              }
          }
          return curr;
-    },
-
-
-    mathAbs: function(x) {
-      x = +x;
-      return (x > 0) ? x : 0 - x;
     },
 
 
