@@ -193,7 +193,6 @@ Game.UnitCircle.prototype = {
         var curr = arr[0];
          var diff = this.mathAbs (num - curr);
          for (var val = 0; val < arr.length; val++) {
-             var newdiff = this.mathAbs (num - arr[val]);
              var newdiff = Math.abs(num - arr[val]);
              if (newdiff < diff) {
                  diff = newdiff;
