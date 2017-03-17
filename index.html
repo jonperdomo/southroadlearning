@@ -8,63 +8,109 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study Playground</title>
 	<link rel="icon" href="http://studyplayground.com/favicon/favicon.ico">
+	<link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet">
     <style type="text/css">
 		body {
-			font-family: Arial, Helvetica, sans-serif;
-			background-color: white;
-			background-image: url("images/clouds.png");
-			background-repeat: repeat;
-            margin: 0;
-			line-height: 2.0;
-        }
+			font-family: 'Comfortaa', cursive;
+			background: lightgray;
+		}
+		section {
+			font-family: 'Comfortaa', cursive;
+			background: white;
+			width: 80%;
+			padding: 1em;
+		    overflow: auto;
+		    min-width: 30em;
+		    max-width: 50em;
+		    margin: auto;
+		}
+
 		h1 {
-			color: red; text-align: center;}
+			font-size: 3em
+			margin-bottom: 0.5em
+			color: white; text-align: center;}
 		h2 {
-			color: blue; text-align: center;}
+			color: white; text-align: center;}
 		h3 {
 			color: black; text-align: center;}
 		p {
 			color: #7BAFD4; text-align: center;}
-		div#banner {
-			margin:auto;
-			padding-top: 100px;
-			<!--
-	        background-color: #DDEEEE;
-			-->
-	        width: 100%;
-        }
-		div#banner-content {
-			margin: auto;
-			width: 500px;
-			padding: 10px;
-			border: 10px solid #98fb98;
-			background-color: white;
-        }
-        div#main-content {
-          padding-top: 100px;
-       }
+
+		code {
+			font-family: monospace;
+			font-size: 0.85em;
+			background: hsla(0, 0, 100, 0.7);
+			border: hsla(0, 0, 0, 0.3) solid 1px;
+			padding: 0.1em;
+			vertical-align: baseline;
+		}
+
+		div {
+			font-size: 18px;
+		    line-height: 1.3em;
+		    vertical-align: top;
+		    margin-bottom: 1em;
+		    border-radius: 0.5em;
+		    padding: 1em;
+
+			box-sizing: border-box;
+			width: 45%;
+		}
+
+		footer {
+			font-size: 12px;
+		}
+
+		desc {
+			font-size: 16px;
+		}
+
+		.ibcolor1 {
+			background: salmon;
+			border: solid red 1px;
+			display: inline-block;
+		}
+
+		.ibcolor2 {
+			background: lightgreen;
+			border: solid green 1px;
+			display: inline-block;
+		}
+
+		.float {
+			background: lightgreen;
+		    border: solid green 1px;
+		    float: left;
+		}
+
+		.half {
+			width: 50%;
+		}
     </style>
 </head>
 <body>
-	<div id="banner">
-		<div id="banner-content">
-			<h1>Study Playground</h1>
-			<h2>Learning games</h2>
-		</div>
-	</div>
-	<div id="main-content">
-		<h3>Times tables</h3>
-		<p>
-			<a href="TimesTables.html">
-				<img src="images/2017-02-21.PNG">
-			</a>
-		</p>
-		<h3>Unit circle</h3>
-		<p>
-			<a href="UnitCircle.html">
-				<img src="images/2017-03-13_UnitCircle.PNG">
-			</a>
-		</p>
-	</div>
+	<section>
+	  <h1>Study Playground</h1>
+	  <div class="ibcolor1">
+		  Times Tables (1-12)<br />
+		  <desc>Use the arrow keys to select the right answer</desc>
+	  	<a href="TimesTables.html">
+			<img style='height: 100%; width: 100%; object-fit: contain' src="images/2017-02-21.PNG">
+		</a>
+	  </div>
+	  <div class="ibcolor2">
+		  Unit Circle<br />
+		  <desc>Use the mouse to select the right angle</desc>
+	  	<a href="UnitCircle.html">
+	  		<img style='height: 100%; width: 100%; object-fit: contain' src="images/2017-03-13_UnitCircle.PNG">
+		</a>
+	  </div>
+	  	<footer>
+	  		<br />
+	  		Developed by Jon Perdomo
+	  		<br />
+	  		Email: <a href="mailto:studyplaygroundweb@gmail.com">studyplaygroundweb@gmail.com</a>
+		</footer>
+	</section>
 </body>
 </html>
