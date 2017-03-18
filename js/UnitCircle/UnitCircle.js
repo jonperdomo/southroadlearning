@@ -5,6 +5,13 @@ Game.UnitCircle.prototype = {
         // Enable mouse click events
         this.game.input.mouse.capture = true;
 
+        // Result icon timer
+        this.result_timer = this.game.time.create(false);
+        this.result_timer.loop(1000, this.onResultTimer, this);
+        this.result_timer.start();
+        this.result_timer.pause();
+        this.showing_result = false;
+
         //  Background
         bg = this.add.sprite(0, 0, 'bg');
         bg.scale.setTo(0.125, 0.125);
@@ -23,7 +30,7 @@ Game.UnitCircle.prototype = {
         this.angle_line = this.add.sprite(this.world.width/2., this.world.height/2., 'angle');
         this.angle_line.anchor.setTo(0.5, 1);
 
-        // Problem text
+        // Equation text
         this.equation_text = this.add.text(this.world.width/2., this.world.height/8., "", {
             font: "30px Arial",
             fill: "#000000",
@@ -54,23 +61,39 @@ Game.UnitCircle.prototype = {
     },
 
 
+    onResultTimer: function() {
+        this.result_timer.pause();
+        console.log("Timer stopped");
+        this.yes_icon.visible = false;
+        // this.no_icon.visible = false;
+        this.updateEquation();
+        this.angle_update = -this.angle_update;
+        // this.game.input.mouse.enabled = true;
+        this.showing_result = false;
+    },
+
+
     checkAnswer: function() {
-        var angle = -Phaser.Math.roundTo(this.angle_line.angle, 0) + 90;
-        if (angle < 0) {
-            angle += 360;
-        }
-        // var final_value = this.closest(angle, this.degrees);
-        // this.equation_text.setText("sin(" + final_value.toString() + "°) = -√3/2");
-        this.equation_text.setText(this.active_equation.equation + "(" + angle.toString() + "°)=" + this.active_equation.point);
-        if (this.active_equation.solution.includes(angle)) {
-            console.log("correct!");
-            this.yes_icon.visible = true;
-            this.no_icon.visible = false;
-            this.updateEquation();
-            this.angle_update = -this.angle_update;
-        } else {
-            this.no_icon.visible = true;
-            this.yes_icon.visible = false;
+        if (this.showing_result == false) {
+            var angle = -Phaser.Math.roundTo(this.angle_line.angle, 0) + 90;
+            if (angle < 0) {
+                angle += 360;
+            }
+            // var final_value = this.closest(angle, this.degrees);
+            // this.equation_text.setText("sin(" + final_value.toString() + "°) = -√3/2");
+            this.equation_text.setText(this.active_equation.equation + "(" + angle.toString() + "°)=" + this.active_equation.point);
+            if (this.active_equation.solution.includes(angle)) {
+                console.log("correct!");
+                this.yes_icon.visible = true;
+                this.showing_result = true;
+                this.result_timer.resume();
+                console.log("Timer started.");
+                // this.game.paused = true;
+            } else {
+                console.log("wrong");
+                // this.no_icon.visible = true;
+                // this.yes_icon.visible = false;
+            }
         }
     },
 
@@ -165,6 +188,16 @@ Game.UnitCircle.prototype = {
 
 
     update: function () {
+        if (this.showing_result == false) {
+            var sprite_angle = this.getAngleFromMousePosition();
+
+            // Find the closest angle from the choices given
+            var angle_choice = this.closest(sprite_angle, this.sprite_degrees);
+            this.angle_line.angle = angle_choice;
+        }
+    },
+
+    getAngleFromMousePosition() {
         // Get the sprite angle based on the mouse position relative to the game center
         center_x = this.world.width/2.
         center_y = this.world.height/2.
@@ -174,10 +207,9 @@ Game.UnitCircle.prototype = {
 
         // Adding 90 degrees is necessary to obtain the correct sprite angle
         sprite_angle = (theta_radians * (180 / Math.PI)) + 90;
-        var angle_choice = this.closest(sprite_angle, this.sprite_degrees);
-        this.angle_line.angle = angle_choice;
-    },
 
+        return sprite_angle;
+    },
 
     wrapPlatform: function (platform) {
         // Half of platform width
