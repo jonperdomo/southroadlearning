@@ -5,13 +5,6 @@ Game.UnitCircle.prototype = {
         // Enable mouse click events
         this.game.input.mouse.capture = true;
 
-        // Result icon timer
-        this.result_timer = this.game.time.create(false);
-        this.result_timer.loop(500, this.onResultTimer, this);
-        this.result_timer.start();
-        this.result_timer.pause();
-        this.showing_result = false;
-
         //  Background
         bg = this.add.sprite(0, 0, 'bg');
         bg.scale.setTo(0.125, 0.125);
@@ -40,12 +33,27 @@ Game.UnitCircle.prototype = {
 
         // Result icons
         // 30 px Arial
-        this.no_icon = this.add.sprite(this.equation_text.x - this.equation_text.width -300, this.equation_text.y, 'no');
-        this.no_icon.anchor.setTo(0.5, 0.5);
-        this.no_icon.visible = false;
         this.yes_icon = this.add.sprite(this.equation_text.x - this.equation_text.width -300, this.equation_text.y, 'yes');
         this.yes_icon.anchor.setTo(0.5, 0.5);
         this.yes_icon.visible = false;
+        this.no_icon = this.add.sprite(this.equation_text.x - this.equation_text.width -300, this.equation_text.y, 'no');
+        this.no_icon.anchor.setTo(0.5, 0.5);
+        this.no_icon.visible = false;
+
+        // Showing result icon
+        this.showing_result = false;
+
+        // Correct icon timer
+        this.correct_timer = this.game.time.create(false);
+        this.correct_timer.loop(500, this.onCorrectTimer, this);
+        this.correct_timer.start();
+        this.correct_timer.pause();
+
+        // Incorrect icon timer
+        this.incorrect_timer = this.game.time.create(false);
+        this.incorrect_timer.loop(500, this.onIncorrectTimer, this);
+        this.incorrect_timer.start();
+        this.incorrect_timer.pause();
 
         // Generate the solution table
         this.sines_table = this.setupSinesTable();
@@ -57,19 +65,9 @@ Game.UnitCircle.prototype = {
         this.equation_text.setText(this.active_equation.equation + "(θ)=" + this.active_equation.point);
         console.log("A new equation set has started!");
 
+        // Check the answer after mouse click events
         this.game.input.onDown.add(this.checkAnswer, this);
     },
-
-
-    onResultTimer: function() {
-        this.result_timer.pause();
-        console.log("Timer stopped");
-        this.yes_icon.visible = false;
-        this.updateEquation();
-        this.angle_update = -this.angle_update;
-        this.showing_result = false;
-    },
-
 
     checkAnswer: function() {
         if (this.showing_result == false) {
@@ -82,14 +80,33 @@ Game.UnitCircle.prototype = {
                 console.log("correct!");
                 this.yes_icon.visible = true;
                 this.showing_result = true;
-                this.result_timer.resume();
+                this.correct_timer.resume();
                 console.log("Timer started.");
             } else {
                 console.log("wrong");
+                this.no_icon.visible = true;
+                this.showing_result = true;
+                this.incorrect_timer.resume();
+                console.log("Timer started.");
             }
         }
     },
 
+    onCorrectTimer: function() {
+        this.correct_timer.pause();
+        console.log("Timer stopped");
+        this.yes_icon.visible = false;
+        this.updateEquation();
+        this.angle_update = -this.angle_update;
+        this.showing_result = false;
+    },
+
+    onIncorrectTimer: function() {
+        this.incorrect_timer.pause();
+        console.log("Timer stopped");
+        this.no_icon.visible = false;
+        this.showing_result = false;
+    },
 
     updateEquation: function() {
         if (this.equations.length > 0) {

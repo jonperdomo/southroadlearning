@@ -24,6 +24,7 @@ Game.Preloader.prototype = {
 	    this.load.image('water_surf', 'assets/Tiles/17.png');
 	    this.load.image('stage', 'assets/Tiles/stage1.png');
 	    this.load.image('star', 'assets/star.png');
+        this.load.image('no', 'assets/no3.png');
         this.load.image('yes', 'assets/yes3.png');
 	    this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
         // Load number sprites.

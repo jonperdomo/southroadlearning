@@ -10,13 +10,6 @@ Game.TimesTables.prototype = {
         var righthand;
         var timesTable;
 
-        // Result icon timer
-        this.result_timer = this.game.time.create(false);
-        this.result_timer.loop(500, this.onResultTimer, this);
-        this.result_timer.start();
-        this.result_timer.pause();
-        this.showing_result = false;
-
         // Set up times table dictionary
         tableRange = (1,12);
         timesTable = this.setupTimesTable(tableRange);
@@ -72,11 +65,6 @@ Game.TimesTables.prototype = {
     	//  Our controls.
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        // Result icons
-        this.yes_icon = this.add.sprite(92, 75, 'yes');
-        this.yes_icon.anchor.setTo(0.5, 0.5);
-        this.yes_icon.visible = false;
-
         // Set up initial equation
         this.choice_number = 3;
         lefthand = this.rnd.integerInRange(1, 12);
@@ -109,6 +97,29 @@ Game.TimesTables.prototype = {
 
         // Set numbers velocity
         this.number_sprites.setAll('body.velocity.x', -100);
+
+        // Result icons
+        this.yes_icon = this.add.sprite(92, 75, 'yes');
+        this.yes_icon.anchor.setTo(0.5, 0.5);
+        this.yes_icon.visible = false;
+        this.no_icon = this.add.sprite(92, 75, 'no');
+        this.no_icon.anchor.setTo(0.5, 0.5);
+        this.no_icon.visible = false;
+
+        // Showing result icon
+        this.showing_result = false;
+
+        // Correct icon timer
+        this.correct_timer = this.game.time.create(false);
+        this.correct_timer.loop(500, this.onCorrectTimer, this);
+        this.correct_timer.start();
+        this.correct_timer.pause();
+
+        // Incorrect icon timer
+        this.incorrect_timer = this.game.time.create(false);
+        this.incorrect_timer.loop(500, this.onIncorrectTimer, this);
+        this.incorrect_timer.start();
+        this.incorrect_timer.pause();
     },
 
     update: function () {
@@ -211,20 +222,31 @@ Game.TimesTables.prototype = {
                 console.log("correct!");
                 this.yes_icon.visible = true;
                 this.showing_result = true;
-                this.result_timer.resume();
+                this.correct_timer.resume();
                 console.log("Timer started.");
             } else {
                 console.log("wrong");
+                this.no_icon.visible = true;
+                this.showing_result = true;
+                this.incorrect_timer.resume();
+                console.log("Timer started.");
             }
         }
     },
 
-    onResultTimer: function() {
-        this.result_timer.pause();
+    onCorrectTimer: function() {
+        this.correct_timer.pause();
         console.log("Timer stopped");
         this.yes_icon.visible = false;
         this.number_sprites.removeAll();
         this.setupEquation();
+        this.showing_result = false;
+    },
+
+    onIncorrectTimer: function() {
+        this.incorrect_timer.pause();
+        console.log("Timer stopped");
+        this.no_icon.visible = false;
         this.showing_result = false;
     },
 
