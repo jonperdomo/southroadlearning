@@ -12,7 +12,7 @@ Game.TimesTables.prototype = {
 
         // Result icon timer
         this.result_timer = this.game.time.create(false);
-        this.result_timer.loop(1000, this.onResultTimer, this);
+        this.result_timer.loop(500, this.onResultTimer, this);
         this.result_timer.start();
         this.result_timer.pause();
         this.showing_result = false;
