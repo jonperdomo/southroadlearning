@@ -65,10 +65,8 @@ Game.UnitCircle.prototype = {
         this.result_timer.pause();
         console.log("Timer stopped");
         this.yes_icon.visible = false;
-        // this.no_icon.visible = false;
         this.updateEquation();
         this.angle_update = -this.angle_update;
-        // this.game.input.mouse.enabled = true;
         this.showing_result = false;
     },
 
@@ -79,8 +77,6 @@ Game.UnitCircle.prototype = {
             if (angle < 0) {
                 angle += 360;
             }
-            // var final_value = this.closest(angle, this.degrees);
-            // this.equation_text.setText("sin(" + final_value.toString() + "°) = -√3/2");
             this.equation_text.setText(this.active_equation.equation + "(" + angle.toString() + "°)=" + this.active_equation.point);
             if (this.active_equation.solution.includes(angle)) {
                 console.log("correct!");
@@ -88,11 +84,8 @@ Game.UnitCircle.prototype = {
                 this.showing_result = true;
                 this.result_timer.resume();
                 console.log("Timer started.");
-                // this.game.paused = true;
             } else {
                 console.log("wrong");
-                // this.no_icon.visible = true;
-                // this.yes_icon.visible = false;
             }
         }
     },
@@ -133,8 +126,6 @@ Game.UnitCircle.prototype = {
                 "solution": this.cosines_table[value] };
             equations.push(sine_data);
             equations.push(cosine_data);
-            // problems.push([sine_text, this.sines_table[value]]);
-            // problems.push([cosine_text, this.cosines_table[value]]);
             points.splice(index, 1);
         }
         this.shuffleArray(equations);

@@ -2,24 +2,20 @@ Game.TimesTables = function(game) {};
 
 Game.TimesTables.prototype = {
     create:function() {
-        //this.stage.backgroundColor = '#3A5963';
-        //var this.player;
-        //var this.platforms;
-        //var this.grounds;
-        //var this.cursors;
-
-        //this.screen_width = this.world.width;
         var numbers;
         var score = 0;
-        //var this.score_text;
         var equation;
-
         var all_equations;
         var lefthand;
         var righthand;
-        //var this.solution;
-
         var timesTable;
+
+        // Result icon timer
+        this.result_timer = this.game.time.create(false);
+        this.result_timer.loop(1000, this.onResultTimer, this);
+        this.result_timer.start();
+        this.result_timer.pause();
+        this.showing_result = false;
 
         // Set up times table dictionary
         tableRange = (1,12);
@@ -77,11 +73,6 @@ Game.TimesTables.prototype = {
         this.cursors = this.input.keyboard.createCursorKeys();
 
         // Result icons
-        // 30 px Arial
-        this.no_icon = this.add.sprite(92, 75, 'no');
-        this.no_icon.anchor.setTo(0.5, 0.5);
-        this.no_icon.visible = false;
-
         this.yes_icon = this.add.sprite(92, 75, 'yes');
         this.yes_icon.anchor.setTo(0.5, 0.5);
         this.yes_icon.visible = false;
@@ -123,7 +114,6 @@ Game.TimesTables.prototype = {
     update: function () {
         this.platforms.forEach(this.wrapPlatform);
         this.number_sprites.forEach(this.wrapNumbers);
-        //numbersleft.forEach(wrapNumbers);
 
         //  Collide the this.player with the this.platforms
         this.physics.arcade.collide(this.player, this.platforms);
@@ -158,7 +148,6 @@ Game.TimesTables.prototype = {
         this.wrapPlayer(this.player);
     },
 
-
     wrapPlayer: function(player) {
         if (player.body.position.y == (this.game.world.height - this.player.height)) {
             console.log("player reset.");
@@ -167,15 +156,6 @@ Game.TimesTables.prototype = {
             console.log("position: ", player.body.position.x, ", ", player.body.position.y);
         }
     },
-
-
-    unpauseGame: function() {
-        // this.game.paused = false;
-        console.log("Unpause here.");
-        this.timer.stop();
-        this.game.paused = false;
-    },
-
 
     setupTimesTable: function (tableRange) {
         timesTable =
@@ -223,13 +203,29 @@ Game.TimesTables.prototype = {
     },
 
     collectNumber: function (player, number) {
-        //  Add and update the score
-        answer = number.key;
-    	if (answer == this.solution)
-    	{
-    		this.number_sprites.removeAll();
-    		this.setupEquation();
-    	}
+        if (this.showing_result == false) {
+            //  Add and update the score
+            answer = number.key;
+        	if (answer == this.solution)
+        	{
+                console.log("correct!");
+                this.yes_icon.visible = true;
+                this.showing_result = true;
+                this.result_timer.resume();
+                console.log("Timer started.");
+            } else {
+                console.log("wrong");
+            }
+        }
+    },
+
+    onResultTimer: function() {
+        this.result_timer.pause();
+        console.log("Timer stopped");
+        this.yes_icon.visible = false;
+        this.number_sprites.removeAll();
+        this.setupEquation();
+        this.showing_result = false;
     },
 
     shuffleArray: function (array) {
