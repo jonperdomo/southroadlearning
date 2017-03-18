@@ -28,16 +28,17 @@ Game.Preloader.prototype = {
         this.load.image('yes', 'assets/yes3.png');
 	    this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
         // Load number sprites.
-	    var numdir = 'assets/Numbers/'
-	    var numval = ''
-	    var numpath = ''
-	    for (step=0; step<145; step++)
-	    {
-	        numval = step.toString();
-	        numpath = numdir + numval + '.png'
-	        console.log(numval)
-	        this.load.image(numval, numpath);
-	    }
+        this.load.spritesheet('times-tables', 'assets/times-tables.png', 50, 50, 144);
+	    // var numdir = 'assets/Numbers/'
+	    // var numval = ''
+	    // var numpath = ''
+	    // for (step=1; step<145; step++)
+	    // {
+	    //     numval = step.toString();
+	    //     numpath = numdir + numval + '.png'
+	    //     console.log(numval)
+	    //     this.load.image(numval, numpath);
+	    // }
     },
 
     create:function() {

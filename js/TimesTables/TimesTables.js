@@ -20,7 +20,7 @@ Game.TimesTables.prototype = {
         //  A simple background for our game
         this.add.sprite(0, 0, 'bg');
 
-        //  The this.platforms group contains the ground and the 2 ledges we can jump on
+        //  The platforms group contains the ground and the 2 ledges we can jump on
         this.grounds = this.add.group();
         this.platforms = this.add.group();
         this.number_sprites = this.add.group();
@@ -69,14 +69,14 @@ Game.TimesTables.prototype = {
         this.choice_number = 3;
         lefthand = this.rnd.integerInRange(1, 12);
         righthand = this.rnd.integerInRange(1, 12);
-        this.solution = (timesTable[lefthand-1][righthand-1]).toString();
+        this.solution = timesTable[lefthand-1][righthand-1]
         console.log(lefthand, " x ", righthand, "is: ", this.solution);
 
     	choice_array = [this.solution];
     	for (var i = 0; i < this.choice_number-1; i++)
     	{
     		var choice = this.rnd.integerInRange(1, 144);
-    		choice_array.push(choice.toString());
+            choice_array.push(choice);
     	}
         this.shuffleArray(choice_array);
 
@@ -85,11 +85,11 @@ Game.TimesTables.prototype = {
         this.score_text = this.add.text(16, 16, equationText, { fontSize: '32px', fill: '#000' });
         this.score_text.x = 400 - (this.score_text.width / 2);
 
-
         // Numbers setup
     	for (var i = 0; i < this.choice_number; i++)
     	{
-    		var number_sprite = this.number_sprites.create(this.world.width + (i * this.world.width / 2), 125, choice_array[i]);
+            var number_sprite = this.number_sprites.create(this.world.width + (i * this.world.width / 2), 125, 'times-tables');
+            number_sprite.frame = choice_array[i]-1;
     		number_sprite.scale.setTo(0.75, 0.75);
     	    number_sprite.body.immovable = true;
     	    number_sprite.body.allowGravity = false;
@@ -216,7 +216,7 @@ Game.TimesTables.prototype = {
     collectNumber: function (player, number) {
         if (this.showing_result == false) {
             //  Add and update the score
-            answer = number.key;
+            answer = number.frame+1;
         	if (answer == this.solution)
         	{
                 console.log("correct!");
@@ -263,14 +263,15 @@ Game.TimesTables.prototype = {
     	// Set up initial equation
         lefthand = this.rnd.integerInRange(1, 12);
         righthand = this.rnd.integerInRange(1, 12);
-        this.solution = (timesTable[lefthand-1][righthand-1]).toString();
+        this.solution = timesTable[lefthand-1][righthand-1]
         console.log(lefthand, " x ", righthand, "is: ", this.solution);
 
     	choice_array = [this.solution];
     	for (var i = 0; i < this.choice_number-1; i++)
     	{
     		var choice = this.rnd.integerInRange(1, 144);
-    		choice_array.push(choice.toString());
+            choice_array.push(choice);
+
     	}
         this.shuffleArray(choice_array);
 
@@ -280,11 +281,11 @@ Game.TimesTables.prototype = {
     	this.score_text.x = (this.world.width / 2.) - (this.score_text.width / 2.);
     	this.solution = (timesTable[lefthand-1][righthand-1]).toString();
 
-
         // Numbers setup
     	for (var i = 0; i < this.choice_number; i++)
     	{
-    		var number_sprite = this.number_sprites.create(this.world.width + (i * this.world.width / 2), 125, choice_array[i]);
+            var number_sprite = this.number_sprites.create(this.world.width + (i * this.world.width / 2), 125, 'times-tables');
+            number_sprite.frame = choice_array[i]-1;
     		number_sprite.scale.setTo(0.75, 0.75);
     	    number_sprite.body.immovable = true;
     	    number_sprite.body.allowGravity = false;
